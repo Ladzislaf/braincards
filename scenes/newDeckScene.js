@@ -1,6 +1,7 @@
 import { Scenes } from 'telegraf';
 import { message } from 'telegraf/filters';
 import db from '../db.js';
+import { showUserDecks } from '../utils.js';
 
 const newDeckScene = new Scenes.BaseScene('newDeck');
 
@@ -18,6 +19,7 @@ newDeckScene.on(message('text'), async (ctx) => {
 	}
 	await db.createNewDeck(ctx.from.id, deckName);
 	await ctx.reply(`Success! The deck ${deckName} was created.`);
+	await showUserDecks(ctx);
 	return ctx.scene.leave();
 });
 

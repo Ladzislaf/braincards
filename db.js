@@ -87,7 +87,7 @@ class DataBase {
 					},
 				});
 			} else {
-				console.log(`User with id: ${userId} was not found.[deleteDeck]`);
+				console.log(`Deck with id: ${deckId} was not found.[deleteDeck]`);
 			}
 		} catch (error) {
 			console.error(error);
@@ -103,6 +103,59 @@ class DataBase {
 					back: backValue,
 				},
 			});
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async getCardList(deckId) {
+		try {
+			const foundDeck = await prisma.deck.findUnique({
+				where: {
+					id: Number(deckId),
+				},
+			});
+			if (foundDeck) {
+				return prisma.card.findMany({
+					where: {
+						deckId: Number(deckId),
+					},
+					select: {
+						id: true,
+						front: true,
+						back: true
+					},
+					orderBy: {
+						priority: 'desc',
+					},
+				});
+			} else {
+				console.log(`Deck with id: ${deckId} was not found.[getDeckList]`);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async changeCardPriority(cardId, newPriority) {
+		try {
+			const foundCard = await prisma.card.findUnique({
+				where: {
+					id: Number(cardId),
+				},
+			});
+			if (foundCard) {
+				await prisma.card.update({
+					where: {
+						id: Number(cardId),
+					},
+					data: {
+						priority: Number(newPriority),
+					},
+				});
+			} else {
+				console.log(`Card with id: ${cardId} was not found.[changeCardPriority]`);
+			}
 		} catch (error) {
 			console.error(error);
 		}
