@@ -10,7 +10,7 @@ export async function showUserDecks(ctx) {
 		keyboard.push([Markup.button.callback(`${el.name} | ${el._count.card}`, `clickDeck${el.id}-${el.name}|${el._count.card}`)]);
 	});
 
-	return ctx.reply('Your decks:', Markup.inlineKeyboard([...keyboard, [Markup.button.callback('[close]', `close`)]]));
+	return ctx.reply('Your decks:', Markup.inlineKeyboard([...keyboard, [Markup.button.callback('[Close]', `close`)]]));
 }
 
 export async function showSelectedDeck(ctx, deckId, deckName, cardsCount) {
@@ -18,11 +18,11 @@ export async function showSelectedDeck(ctx, deckId, deckName, cardsCount) {
 		`${deckName} | ${cardsCount}`,
 		Markup.inlineKeyboard([
 			[
-				Markup.button.callback('learn', `learnDeck${deckId}`),
-				Markup.button.callback('add a card', `addToDeck${deckId}`),
-				Markup.button.callback('delete', `deleteDeck${deckId}`),
+				Markup.button.callback('Learn', `learnDeck${deckId}`),
+				Markup.button.callback('Add a card', `addToDeck${deckId}`),
+				Markup.button.callback('Delete', `deleteDeck${deckId}`),
 			],
-			[Markup.button.callback('<= back', `decksList`)],
+			[Markup.button.callback('<= Back', `decksList`)],
 		])
 	);
 }

@@ -1,6 +1,5 @@
 import { Telegraf, Markup, Scenes, session } from 'telegraf';
 import dotenv from 'dotenv';
-import server from './server.js';
 import db from './db.js';
 import newDeckScene from './scenes/newDeckScene.js';
 import newCardScene from './scenes/newCardScene.js';
@@ -8,7 +7,6 @@ import learnDeckScene from './scenes/learnDeckScene.js';
 import { showUserDecks, showSelectedDeck } from './utils.js';
 
 dotenv.config();
-server.start();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const stage = new Scenes.Stage([newDeckScene, newCardScene, learnDeckScene]);
@@ -86,8 +84,19 @@ bot.action('close', async (ctx) => {
 	return ctx.answerCbQuery('Closed.');
 });
 
-// ==============================================
+if (process.env.LOCAL_MODE === 'on') {
+	bot.launch(() => console.log('Braincards bot is running locally.'));
+} else {
+	bot.launch(
+		{
+			webhook: {
+				domain: process.env.DOMAIN,
+				port: process.env.PORT || 443,
+			},
+		},
+		() => console.log('Braincards bot is running on webhook.')
+	);
+}
 
-bot.launch();
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));

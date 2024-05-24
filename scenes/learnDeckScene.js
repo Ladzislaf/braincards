@@ -14,10 +14,10 @@ learnDeckScene.action('showBack', async (ctx) => {
 
 learnDeckScene.action(/^answer\d{1}$/, async (ctx) => {
 	const newPriority = +ctx.callbackQuery.data.substring(6);
-	const { id } = ctx.session.learn.cards[ctx.session.learn.currentCardIndex];
-	await db.changeCardPriority(id, newPriority);
+	ctx.session.learn.cards[ctx.session.learn.currentCardIndex].newPriority = newPriority;
 
 	if (ctx.session.learn.currentCardIndex >= ctx.session.learn.cards.length - 1) {
+		await db.changeCardsPriority(ctx.session.learn.cards);
 		delete ctx.session.learn;
 		await ctx.answerCbQuery('All cards learned.');
 		await ctx.deleteMessage();
@@ -27,6 +27,14 @@ learnDeckScene.action(/^answer\d{1}$/, async (ctx) => {
 		ctx.session.learn.currentCardIndex++;
 		return showFrontValue(ctx);
 	}
+});
+
+learnDeckScene.action('deleteCard', async (ctx) => {
+	const { id } = ctx.session.learn.cards[ctx.session.learn.currentCardIndex];
+	await db.deleteCard(id);
+	await ctx.answerCbQuery('Deleted.');
+	ctx.session.learn.currentCardIndex++;
+	return showFrontValue(ctx);
 });
 
 learnDeckScene.action('stopLearn', async (ctx) => {
@@ -41,10 +49,7 @@ async function showFrontValue(ctx) {
 
 	return ctx.editMessageText(
 		`< ${frontValue} >`,
-		Markup.inlineKeyboard([
-			[Markup.button.callback('Show back side', `showBack`)],
-			[Markup.button.callback('Stop learning', `stopLearn`)],
-		])
+		Markup.inlineKeyboard([[Markup.button.callback('Show back side', `showBack`)]])
 	);
 }
 
@@ -59,7 +64,7 @@ async function showBackValue(ctx) {
 				Markup.button.callback('Norm', `answer2`),
 				Markup.button.callback('Hard', `answer3`),
 			],
-			[Markup.button.callback('Stop learning', `stopLearn`)],
+			[Markup.button.callback('Stop learning', `stopLearn`), Markup.button.callback('Delete a card', `deleteCard`)],
 		])
 	);
 }

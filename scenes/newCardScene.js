@@ -1,4 +1,4 @@
-import { Scenes } from 'telegraf';
+import { Markup, Scenes } from 'telegraf';
 import { message } from 'telegraf/filters';
 import db from '../db.js';
 
@@ -23,8 +23,11 @@ newCardScene.on(message('text'), async (ctx) => {
 		ctx.reply('Success! Send a back side of the card now. (3-300 symbols)');
 	} else if (ctx.session.newCard.side === 'back') {
 		await db.createNewCard(ctx.session.newCard.deckId, ctx.session.newCard.frontValue, cardText);
+		await ctx.reply(
+			`Success! The card was created.`,
+			Markup.inlineKeyboard([[Markup.button.callback('Add one more', `addToDeck${ctx.session.newCard.deckId}`)]])
+		);
 		delete ctx.session.newCard;
-		await ctx.reply(`Success! The card was created.`);
 		return ctx.scene.leave();
 	}
 });

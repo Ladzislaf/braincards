@@ -11,6 +11,7 @@ class DataBase {
 			return Boolean(foundUser);
 		} catch (error) {
 			console.error(error);
+			return false;
 		}
 	}
 
@@ -67,6 +68,7 @@ class DataBase {
 				});
 			} catch (error) {
 				console.error(error);
+				return [];
 			}
 		} else {
 			console.log(`User with id: ${userId} was not found.[getDeckList]`);
@@ -75,20 +77,11 @@ class DataBase {
 
 	async deleteDeck(deckId) {
 		try {
-			const foundDeck = await prisma.deck.findUnique({
+			await prisma.deck.delete({
 				where: {
 					id: Number(deckId),
 				},
 			});
-			if (foundDeck) {
-				await prisma.deck.delete({
-					where: {
-						id: foundDeck.id,
-					},
-				});
-			} else {
-				console.log(`Deck with id: ${deckId} was not found.[deleteDeck]`);
-			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -108,54 +101,53 @@ class DataBase {
 		}
 	}
 
-	async getCardList(deckId) {
+	async deleteCard(cardId) {
 		try {
-			const foundDeck = await prisma.deck.findUnique({
+			await prisma.card.delete({
 				where: {
-					id: Number(deckId),
+					id: Number(cardId),
 				},
 			});
-			if (foundDeck) {
-				return prisma.card.findMany({
-					where: {
-						deckId: Number(deckId),
-					},
-					select: {
-						id: true,
-						front: true,
-						back: true
-					},
-					orderBy: {
-						priority: 'desc',
-					},
-				});
-			} else {
-				console.log(`Deck with id: ${deckId} was not found.[getDeckList]`);
-			}
 		} catch (error) {
 			console.error(error);
 		}
 	}
 
-	async changeCardPriority(cardId, newPriority) {
+	async getCardList(deckId) {
 		try {
-			const foundCard = await prisma.card.findUnique({
+			return prisma.card.findMany({
 				where: {
-					id: Number(cardId),
+					deckId: Number(deckId),
+				},
+				select: {
+					id: true,
+					front: true,
+					back: true,
+				},
+				orderBy: {
+					priority: 'desc',
 				},
 			});
-			if (foundCard) {
-				await prisma.card.update({
-					where: {
-						id: Number(cardId),
-					},
-					data: {
-						priority: Number(newPriority),
-					},
-				});
-			} else {
-				console.log(`Card with id: ${cardId} was not found.[changeCardPriority]`);
-			}
+		} catch (error) {
+			console.error(error);
+			return [];
+		}
+	}
+
+	async changeCardsPriority(cardsArray) {
+		try {
+			cardsArray.forEach(async (el) => {
+				if (el.newPriority) {
+					await prisma.card.update({
+						where: {
+							id: Number(el.id),
+						},
+						data: {
+							priority: Number(el.newPriority),
+						},
+					});
+				}
+			});
 		} catch (error) {
 			console.error(error);
 		}
