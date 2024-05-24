@@ -28,14 +28,14 @@ bot.start(async (ctx) => {
 
 bot.command('my_decks', async (ctx) => {
 	await ctx.deleteMessage();
+	await db.createNewUser(ctx.from.id);
 	await showUserDecks(ctx);
 });
 
 bot.command('new_deck', async (ctx) => {
+	await db.createNewUser(ctx.from.id);
 	return ctx.scene.enter('newDeck');
 });
-
-// ==============================================
 
 bot.action('decksList', async (ctx) => {
 	await ctx.deleteMessage();
