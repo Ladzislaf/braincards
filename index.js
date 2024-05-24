@@ -85,7 +85,7 @@ bot.action('close', async (ctx) => {
 });
 
 if (process.env.LOCAL_MODE === 'on') {
-	bot.launch(() => console.log('Braincards bot is running locally.'));
+	bot.launch(() => console.log('Memoboto bot is running locally.'));
 } else {
 	bot.launch(
 		{
@@ -94,7 +94,7 @@ if (process.env.LOCAL_MODE === 'on') {
 				port: process.env.PORT || 443,
 			},
 		},
-		() => console.log('Braincards bot is running on webhook.')
+		() => console.log('Memoboto bot is running on webhook.')
 	);
 }
 

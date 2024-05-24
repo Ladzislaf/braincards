@@ -1,1 +1,1 @@
-# The [@PomoBotoBot](https://t.me/PomoBotoBot) is available on Telegram!
+# The [@MemoBotoBot](https://t.me/MemoBotoBot) is available on Telegram!

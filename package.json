@@ -1,8 +1,9 @@
 {
-  "name": "braincards",
+  "name": "memoboto",
   "version": "1.0.0",
-  "description": "Braincards Telegram bot",
+  "description": "Memoboto Telegram bot",
   "main": "index.js",
+	"type": "module",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js"
@@ -17,6 +18,5 @@
   "devDependencies": {
     "nodemon": "^3.1.0",
     "prisma": "^5.13.0"
-  },
-  "type": "module"
+  }
 }
