@@ -21,6 +21,9 @@ bot.telegram.setMyCommands([
 ]);
 
 bot.start(async (ctx) => {
+	console.log('[Start] first name:', ctx.from.first_name);
+	console.log('[Start] last name:', ctx.from.last_name);
+	console.log('[Start] username:', ctx.from.username);
 	await ctx.deleteMessage();
 	await db.createNewUser(ctx.from.id);
 	return ctx.reply('Bot commands:\n/my_decks - Show your decks\n/new_deck - Create new deck');
@@ -63,12 +66,9 @@ bot.action(/^learnDeck\d*$/, async (ctx) => {
 });
 
 bot.action(/^addToDeck\d*$/, async (ctx) => {
-	const deckId = ctx.callbackQuery.data.substring(9);
-	ctx.session.newCard = {
-		deckId: deckId,
-	};
+	ctx.session.deckId = ctx.callbackQuery.data.substring(9);
 	await ctx.scene.enter('newCard');
-	return ctx.answerCbQuery('New deck.');
+	return ctx.answerCbQuery('New card.');
 });
 
 bot.action(/^deleteDeck\d*$/, async (ctx) => {

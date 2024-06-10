@@ -6,28 +6,27 @@ const newCardScene = new Scenes.BaseScene('newCard');
 
 newCardScene.enter(async (ctx) => {
 	await ctx.deleteMessage();
-	ctx.session.newCard.side = 'front';
-	return ctx.reply(`Send a front side of the card. (3-300 symbols)`);
+	return ctx.reply(`Send cards text in format:\nfront 1 @= back 1 @;\nfront 2 @= back 2`);
 });
 
 newCardScene.on(message('text'), async (ctx) => {
-	await ctx.deleteMessage();
-	const cardText = ctx.message.text;
+	const newCardsArray = ctx.message.text.split('@;');
 
-	if (cardText.length < 3 || cardText.length > 300) {
-		return ctx.reply('Incorrect text. (3-300 symbols)');
-	}
-	if (ctx.session.newCard.side === 'front') {
-		ctx.session.newCard.frontValue = cardText;
-		ctx.session.newCard.side = 'back';
-		ctx.reply('Success! Send a back side of the card now. (3-300 symbols)');
-	} else if (ctx.session.newCard.side === 'back') {
-		await db.createNewCard(ctx.session.newCard.deckId, ctx.session.newCard.frontValue, cardText);
-		await ctx.reply(
-			`Success! The card was created.`,
-			Markup.inlineKeyboard([[Markup.button.callback('Add one more', `addToDeck${ctx.session.newCard.deckId}`)]])
-		);
-		delete ctx.session.newCard;
+	if (newCardsArray.length < 1) {
+		return ctx.reply('Incorrect format.\nfront 1 @= back 1 @;\nfront 2 @= back 2');
+	} else {
+		let cardsCounter = 0;
+
+		newCardsArray.forEach((el) => {
+			const newCard = el.split('@=');
+
+			if (newCard.length === 2) {
+				db.createNewCard(ctx.session.deckId, newCard[0], newCard[1]);
+				cardsCounter++;
+			}
+		});
+		await ctx.reply(`Added ${cardsCounter} cards.`);
+		delete ctx.session.deckId;
 		return ctx.scene.leave();
 	}
 });
