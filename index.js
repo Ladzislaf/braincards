@@ -1,4 +1,4 @@
-import { Telegraf, Markup, Scenes, session } from 'telegraf';
+import { Telegraf, Scenes, session } from 'telegraf';
 import dotenv from 'dotenv';
 import db from './db.js';
 import newDeckScene from './scenes/newDeckScene.js';
@@ -84,14 +84,14 @@ bot.action('close', async (ctx) => {
 	return ctx.answerCbQuery('Closed.');
 });
 
-if (process.env.LOCAL_MODE === 'on') {
+if (process.env.ENV === 'local') {
 	bot.launch(() => console.log('Memoboto bot is running locally.'));
 } else {
 	bot.launch(
 		{
 			webhook: {
-				domain: process.env.DOMAIN,
-				port: process.env.PORT || 443,
+				domain: process.env.WH_DOMAIN,
+				port: process.env.WH_PORT || 443,
 			},
 		},
 		() => console.log('Memoboto bot is running on webhook.')
