@@ -57,12 +57,17 @@ bot.action(/^clickDeck\d+-.+\|\d+$/, async (ctx) => {
 
 bot.action(/^learnDeck\d*$/, async (ctx) => {
 	const deckId = ctx.callbackQuery.data.substring(9);
-	ctx.session.learn = {
-		cards: await db.getCardList(deckId),
-		currentCardIndex: 0,
-	};
-	await ctx.scene.enter('learnDeck');
-	return ctx.answerCbQuery('Learning.');
+	const deckCards = await db.getCardList(deckId);
+	if (deckCards.length <= 0) {
+		return ctx.answerCbQuery('Deck is empty.');
+	} else {
+		ctx.session.learn = {
+			cards: deckCards,
+			currentCardIndex: 0,
+		};
+		await ctx.scene.enter('learnDeck');
+		return ctx.answerCbQuery('Learning.');
+	}
 });
 
 bot.action(/^addToDeck\d*$/, async (ctx) => {
