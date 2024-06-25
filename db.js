@@ -10,7 +10,7 @@ class DataBase {
 			const foundUser = await prisma.user.findUnique({ where: { id: `${userId}` } });
 			return Boolean(foundUser);
 		} catch (error) {
-			console.error(error);
+			console.error('[isUserExists] error:', error.message);
 			return false;
 		}
 	}
@@ -25,7 +25,7 @@ class DataBase {
 					},
 				});
 			} catch (error) {
-				console.error(error);
+				console.error('[createNewUser] error:', error.message);
 			}
 		} else {
 			console.log(`User with id: ${userId} is already exists.[createNewUser]`);
@@ -43,7 +43,7 @@ class DataBase {
 					},
 				});
 			} catch (error) {
-				console.error(error);
+				console.error('[createNewDeck] error:', error.message);
 			}
 		} else {
 			console.log(`User with id: ${userId} was not found.[createNewDeck]`);
@@ -67,7 +67,7 @@ class DataBase {
 					},
 				});
 			} catch (error) {
-				console.error(error);
+				console.error('[getDeckList] error:', error.message);
 				return [];
 			}
 		} else {
@@ -83,7 +83,7 @@ class DataBase {
 				},
 			});
 		} catch (error) {
-			console.error(error);
+			console.error('[deleteDeck] error:', error.message);
 		}
 	}
 
@@ -97,7 +97,7 @@ class DataBase {
 				},
 			});
 		} catch (error) {
-			console.error(error);
+			console.error('[createNewCard] error:', error.message);
 		}
 	}
 
@@ -109,7 +109,7 @@ class DataBase {
 				},
 			});
 		} catch (error) {
-			console.error(error);
+			console.error('[deleteCard] error:', error.message);
 		}
 	}
 
@@ -129,7 +129,7 @@ class DataBase {
 				},
 			});
 		} catch (error) {
-			console.error(error);
+			console.error('[getCardList] error:', error.message);
 			return [];
 		}
 	}
@@ -149,7 +149,7 @@ class DataBase {
 				}
 			});
 		} catch (error) {
-			console.error(error);
+			console.error('[changeCardsPriority] error:', error.message);
 		}
 	}
 }

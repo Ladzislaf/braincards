@@ -20,6 +20,11 @@ bot.telegram.setMyCommands([
 	{ command: '/new_deck', description: 'Create new deck' },
 ]);
 
+bot.catch((err, ctx) => {
+	console.error(`User ${ctx.from.username} (${ctx.from.id}) error:`, err.message);
+	ctx.reply('Error, try to restart the Bot.');
+});
+
 bot.start(async (ctx) => {
 	console.log('[Start] first name:', ctx.from.first_name);
 	console.log('[Start] last name:', ctx.from.last_name);
